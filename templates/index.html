@@ -1,0 +1,53 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<!-- HTML comments use these delimiters -->
+<html>
+<head>
+<title>Photo Upload</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/myStyle.css' %}">
+<style>
+
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <div id="navBox">
+
+        <div id="title">
+        Photo Editing App
+        </div>
+
+            <a href="{% url 'index' %}">Home</a>
+            &nbsp;
+            |
+            &nbsp;
+            <a href="{% url 'upload_photo' %}">Photo Upload</a>
+            &nbsp;
+    </div>
+    
+    <div id="content">
+        
+        <h2>Home</h2>
+
+        <p>
+            Welcome to the PhotoEdit App!
+
+
+            
+        </p>
+
+
+    </div>
+       
+
+    <div id="footer">
+        Magdalena Rogalska
+    </div>
+
+</body>
+</html>

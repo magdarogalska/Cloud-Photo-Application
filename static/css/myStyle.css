@@ -1,0 +1,117 @@
+html, body {   /* Prevents tiny white border inside browser window. */
+    margin:0rem; 
+    padding:0rem; 
+}
+
+body { 
+    background-color: #3B88E3;
+    background-image: url("../pics/foto.jpeg");
+    background-attachment: fixed;
+    background-size: cover;
+    color: rgb(0, 0, 0);
+    font-family:'Arial';
+}
+.formClass{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 25vh;
+}
+
+.resized-image {
+  max-width: 300px;
+  max-height: 200px;
+}
+.image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    /*height: calc(100vh - 50px);*/
+
+}
+.image-container img{
+    max-width: 300px;
+    max-height: 200px;
+}
+
+
+#title { 
+    font-size:2rem;
+    color:black;
+    text-align:center;
+    white-space: nowrap;
+    margin-bottom: 1rem;
+
+    
+}
+#navBox{
+    background-color: rgb(194, 227, 243);
+    font-size: 1rem;
+    text-align:center;
+    color:black;
+    position:fixed;
+    top:0px;
+    left:0px;
+    z-index: 1;
+    width:100%;
+    padding:1rem;
+    flex-direction: column;
+
+    
+    
+}
+#navBox a{
+    text-decoration: none;
+    color:black
+}
+
+
+
+#content {  /* Add padding top to prevent titleNav from covering up top of content. 
+               add padding bottom to prevent bottom content from getting hidden under footer. */ 
+    padding:1rem;
+    padding-right:1rem;
+    padding-top: 6rem;
+}
+#content a{
+    color:rgb(8, 72, 94);
+    
+}
+#content h2{
+    text-align: center;
+}
+        
+#footer { /* footer fixed, always at the bottom left */
+    position: fixed;
+    bottom: 0rem; 
+    left: 0rem; 
+    z-index: 1; /* make sure footer is on top of content which would have default z-index value of 0 */
+
+    background-color:rgb(194, 227, 243);
+    color: black;
+    width:100%; /* fixed elements are not 100% by default like other divs would be */
+    text-align:center;
+    padding:0.5rem;	 	 
+}
+/*@media only screen and (min-width: 40rem){*/
+/*    #content{*/
+/*        margin-top: 4.5 rem;*/
+/*    }*/
+/*    #navBox{*/
+/*        flex-direction: row;*/
+/*        justify-content: space-between;*/
+/*        text-align: right;*/
+/*        scroll-padding: 4rem;*/
+/*    }*/
+/*    #title { */
+/*    font-size:3rem;*/
+/*    color:black;*/
+/*    text-align:left;*/
+
+/*    */
+/*}*/
+
+/*}*/

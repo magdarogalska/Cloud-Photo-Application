@@ -1,0 +1,105 @@
+html, body {   /* Prevents tiny white border inside browser window. */
+    margin:0rem; 
+    padding:0rem; 
+}
+
+body { 
+    background-color: #3B88E3; /* red, green, blue (255 is max)
+                                             this is the turqoise color */
+
+    background-attachment: fixed;
+    background-size: cover;
+    color: rgb(0, 0, 0);  /* color of font */
+    font-family:'Arial'; /* "no tail" font is more readable for small font */
+}
+.formClass{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+
+
+#title { 
+    font-size:2rem;
+    color:rgb(255, 255, 255);
+    text-align:center;
+    white-space: nowrap;
+
+    
+}
+#navBox{
+    background-color: rgb(101, 182, 216);
+    font-size: 1rem;
+    text-align:center;
+    color:white;
+    position:fixed;
+    top:0px;
+    left:0px;
+    z-index: 1;
+    width:100%;
+    padding:1rem;
+    flex-direction: column;
+    
+    
+}
+#navBox a{
+    text-decoration: none;
+    color:rgb(255, 255, 255);
+}
+
+
+
+#nav a {  /* this selector applies to links within #nav */
+    text-decoration:none;  /* Do not want links in "nav" to be underlined */
+    color: #f1efef; /* light gray: to specify color for links, you have to style the "a" tag */
+}
+
+#content {  /* Add padding top to prevent titleNav from covering up top of content. 
+               add padding bottom to prevent bottom content from getting hidden under footer. */ 
+    padding:1rem;
+    padding-right:1rem;
+    padding-top: 6rem; /* prevent the top of the content from getting hidden under the fixed titleNav */
+    padding-bottom: 2rem; /* prevent the the bottom of the content from getting hidden under the fixed footer */
+}
+#content a{
+    color:rgb(8, 72, 94);
+    
+}
+#content h2{
+    text-align: center;
+}
+        
+#footer { /* footer fixed, always at the bottom left */
+    position: fixed;
+    bottom: 0rem; 
+    left: 0rem; 
+    z-index: 1; /* make sure footer is on top of content which would have default z-index value of 0 */
+
+    background-color:rgb(101, 182, 216);
+    color: white; 
+    width:100%; /* fixed elements are not 100% by default like other divs would be */
+    text-align:center;
+    padding:0.5rem;	 	 
+}
+@media only screen and (min-width: 40rem){
+    #content{
+        margin-top: 4.5 rem;
+    }
+    #navBox{
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: right;
+        scroll-padding: 4rem;
+    }
+    #title { 
+    font-size:3rem;
+    color:rgb(255, 255, 255);
+    text-align:left;
+
+    
+}
+
+}

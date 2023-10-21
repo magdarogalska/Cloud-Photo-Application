@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Photo</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/myStyle.css' %}">
+</head>
+
+<body>
+
+    <div id="navBox">
+
+        <div id="title">
+        Photo Editing App
+        </div>
+
+            <a href="{% url 'index' %}">Home</a>
+            &nbsp;
+            |
+            &nbsp;
+            <a href="{% url 'upload_photo' %}">Photo Upload</a>
+            &nbsp;
+    </div>
+
+    <div id="content">
+
+        <h2>Home</h2>
+
+        <div class="formClass">
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload Photo</button>
+            </form>
+        </div>
+
+
+    </div>
+
+
+    <div id="footer">
+        Magdalena Rogalska
+    </div>
+
+</body>
+</html>
