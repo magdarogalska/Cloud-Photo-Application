@@ -28,24 +28,11 @@
         <h2>Choose filter</h2>
 
         <div class="image-container">
-
-            <img src="{{ photo.image.url }}" alt="Uploaded Photo">
-
+            <h1>Filtered Image</h1>
+            <img src="{{ photo.image.url }}" alt="Filtered Image">
         </div>
 
 
-    <form method="post" action="{% url 'apply_filter' image_url=photo.image.url%}">
-        {% csrf_token %}
-        <input type="hidden" name="image_url" value="{{ photo.image.url }}">
-
-        <label for="filter-select">Choose a filter:</label>
-        <select name="filter" id="filter-select">
-            <option value="grayscale">Grayscale</option>
-            <option value="sepia">Sepia</option>
-            <option value="posterize">Posterize</option>
-        </select>
-        <button type="submit">Apply Filter</button>
-    </form>
 
 
 
