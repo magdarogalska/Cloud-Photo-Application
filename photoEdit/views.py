@@ -1,7 +1,7 @@
 import io
 from urllib.parse import urlparse, urlsplit
-
-import boto3 as boto3
+import requests
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PhotoUploadForm
 from .models import Photo
@@ -10,19 +10,48 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.conf import settings
 from botocore.exceptions import NoCredentialsError
 from PIL import Image, ImageOps, ImageFilter
-from .image_func import sepia_filter, poster_filter
 
-from django.http import HttpResponse
 
 
 def photo_uploaded(request, pk):
     photo = Photo.objects.get(pk=pk)
+    if request.method == 'POST':
+        filter_type = request.POST.get('filter')
+        url = photo.image.url
+        new_img = applyfilter(url, filter_type, pk)
 
-    return render(request, 'photo_uploaded.html', {'photo': photo})
 
-# def photo_filtered(request):
-#
-#     return render(request, 'filter_result.html', {'photo': photo})
+        return render(request, 'filter_result.html', {'img_url':new_img})
+
+    return render(request, 'photo_uploaded.html', {'photo':photo})
+def download_photo(request):
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        s3 = boto3.client(
+            's3',
+            region_name=settings.AWS_S3_REGION_NAME,
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+        )
+        photo_key = url.replace('https://photoappmr.s3.amazonaws.com/', '')
+
+        try:
+            # Replace 'your-bucket-name' with your actual S3 bucket name
+
+            response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=photo_key)
+            content_type = response['ContentType']
+            content = response['Body'].read()
+
+            response = HttpResponse(content, content_type=content_type)
+            response['Content-Disposition'] = f'attachment; filename="{photo_key}"'
+            return response
+
+        except Exception as e:
+            return HttpResponse("File not found", status=404)
+
+
+
+
 
 
 def index(request):
@@ -32,61 +61,69 @@ def index(request):
 from io import BytesIO
 
 
-def apply_filter(request):
-    if request.method == 'POST':
-        filter_type = request.POST.get('filter')
-        image_url = request.POST.get('image_url')
-        index = image_url.find(".jpg")
+def applyfilter(url, preset, pk):
 
-        # Extract the part of the URL up to ".jpg"
-        if index != -1:
-            image_url = image_url[:index + 4]  # +4 to include ".jpg"
+
+    f = url.replace('https://photoappmr.s3.amazonaws.com/photos/','')
+    index = str(f).find('.jpg')
+    f = str(f)[:index]
+
+    outputfilename = f + '-out.jpg'
+
+
+
+
+    try:
+        # Send an HTTP GET request to the S3 URL to download the image.
+        response = requests.get(url)
+
+        # Check if the request was successful (HTTP status code 200).
+        if response.status_code == 200:
+            # Open the image using Pillow (PIL).
+            image = Image.open(BytesIO(response.content))
+            # image.show()
         else:
-            # ".jpg" not found in the URL
-            path_without_extension = image_url
-
-        s3 = boto3.resource('s3',
-                            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-
-        bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
-        key = image_url.replace('https://photoappmr.s3.amazonaws.com/','')
-        image = bucket.Object(key)
-        img_data = image.get().get('Body').read()
-        image = Image.open(io.BytesIO(img_data))
-        # s3 = boto3.client('s3', region_name=settings.AWS_S3_REGION_NAME)
-        # bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-        # object_key = image_url
-
-        # Download the image from S3 to a local file
-        # local_file_path = 'static/pics/newpic.jpg'
-        # s3.download_file(bucket_name, object_key, local_file_path)
-
-        # Apply the filter to the original image
-
-        if filter_type == 'grayscale':
-            filtered_image = ImageOps.grayscale(image)
-        elif filter_type == 'sepia':
-            filtered_image = sepia_filter(image)
-        elif filter_type == 'posterize':
-            filtered_image = poster_filter(image)
-        else:
-            filtered_image = image
-
-        # Create a temporary in-memory buffer to save the filtered image
-        filtered_image_io = BytesIO()
-        filtered_image.save(filtered_image_io, format='JPEG')
-
-        # Upload the filtered image to S3 with a new object key
-        filtered_object_key = f'filtered/newpic.jpg'
-        s3.upload_fileobj(filtered_image_io, settings.AWS_STORAGE_BUCKET_NAME, filtered_object_key)
+            print(f"Failed to download the image. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
 
 
+    if preset == 'grayscale':
+        image = ImageOps.grayscale(image)
 
-        return render(request, 'filter_result.html')
 
-    return render(request, 'photo_uploaded.html', {'form': PhotoUploadForm()})
+    if preset == 'edge':
+        image = ImageOps.grayscale(image)
+        image = image.filter(ImageFilter.FIND_EDGES)
+
+    if preset == 'posterize':
+        image = ImageOps.posterize(image, 3)
+
+    if preset == 'solar':
+        image = ImageOps.solarize(image, threshold=80)
+
+    image_stream = BytesIO()
+    image.save(image_stream, format='JPEG')
+    image_stream.seek(0)
+
+    s3 = boto3.client(
+        's3',
+        region_name=settings.AWS_S3_REGION_NAME,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+    )
+    s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    s3_key = 'filtered/' + 'photo'+str(pk)+'.jpg'
+    s3.upload_fileobj(image_stream, s3_bucket_name, s3_key)
+
+    # Generate the S3 URL of the uploaded image
+    s3_url = f"https://{s3_bucket_name}.s3.amazonaws.com/{s3_key}"
+
+
+    return s3_url
+
+
 
 
 def upload_photo(request):
@@ -100,13 +137,22 @@ def upload_photo(request):
                     s3 = boto3.client('s3')
                     object_key = f'photos/{photo.image.name}'
                     s3.upload_file(photo.temporary_file_path(), settings.AWS_STORAGE_BUCKET_NAME, object_key)
+
                 except NoCredentialsError:
-                    # Handle AWS credentials error
-                    # You may want to log the error or display an error message to the user.
+
                     pass
-            # original_image_path = photo.image.path
-            # return render(request, 'photo_uploaded.html', {'original_image_path': original_image_path})
-            return redirect('photo_uploaded', pk=photo.pk)
+
+            return redirect('photo_uploaded', pk= photo.pk)
     else:
         form = PhotoUploadForm()
     return render(request, 'photo_upload.html', {'form': form})
+
+def handle_uploaded_file(f,filter):
+    uploadfilename='photos/' + f.name
+    with open(uploadfilename, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+    outputfilename=applyfilter(f.name, filter)
+    return outputfilename
+

@@ -28,11 +28,14 @@
         <h2>Home</h2>
 
         <div class="formClass">
+
             <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Upload Photo</button>
+            <button type="submit" >Upload Photo</button>
+
             </form>
+
         </div>
 
 

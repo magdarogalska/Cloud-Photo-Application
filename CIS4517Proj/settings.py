@@ -14,14 +14,14 @@ from pathlib import Path
 import os
 
 #S3 BUCKETS CONFIG
-AWS_ACCESS_KEY_ID = 'AKIAZXUUHFIT46FTJTX6'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'photoappmr'
+AWS_ACCESS_KEY_ID = 'AWS-key-id'
+AWS_SECRET_ACCESS_KEY = 'AWS-key'
+AWS_STORAGE_BUCKET_NAME = 'bucket-name'
 AWS_S3_FILE_OVERWRITE = False  # (optional: default is True) Set to False if you want to have extra characters appended.
 AWS_DEFAULT_ACL = None  # (optional; default is None) which means the file will inherit the bucket’s permission
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_S3_REGION_NAME = 'us-east-2'
-
+AWS_S3_REGION_NAME = 'region'
+DEFAULT_S3_PATH = "photos"
 # AWS_S3_CUSTOM_DOMAIN = 'your-cloudfront-domain.com' # If you’re using S3 as a CDN like CloudFront
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -91,12 +91,17 @@ WSGI_APPLICATION = 'CIS4517Proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+       'OPTIONS': {
+           'timeout': 20,
+       }
+   }
 }
+
 
 
 # Password validation

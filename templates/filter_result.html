@@ -29,7 +29,12 @@
 
         <div class="image-container">
             <h1>Filtered Image</h1>
-            <img src="{{ photo.image.url }}" alt="Filtered Image">
+            <img src="{{ img_url }}" alt="Filtered Image">
+            <form method="post" action="{% url 'download_photo' %}">
+                {% csrf_token %}
+            <input type="hidden" name="url" value="{{ img_url }}">
+            <input type="submit" value="Download Photo">
+            </form>
         </div>
 
 

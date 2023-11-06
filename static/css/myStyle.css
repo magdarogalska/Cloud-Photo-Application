@@ -33,7 +33,7 @@ body {
 
 }
 .image-container img{
-    max-width: 300px;
+    /*max-width: 300px;*/
     max-height: 200px;
 }
 
