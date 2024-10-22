@@ -36,7 +36,7 @@ def download_photo(request):
         photo_key = url.replace('https://photoappmr.s3.amazonaws.com/', '')
 
         try:
-            # Replace 'your-bucket-name' with your actual S3 bucket name
+
 
             response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=photo_key)
             content_type = response['ContentType']

@@ -17,12 +17,12 @@ import os
 AWS_ACCESS_KEY_ID = 'AWS-key-id'
 AWS_SECRET_ACCESS_KEY = 'AWS-key'
 AWS_STORAGE_BUCKET_NAME = 'bucket-name'
-AWS_S3_FILE_OVERWRITE = False  # (optional: default is True) Set to False if you want to have extra characters appended.
-AWS_DEFAULT_ACL = None  # (optional; default is None) which means the file will inherit the bucket’s permission
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_REGION_NAME = 'region'
 DEFAULT_S3_PATH = "photos"
-# AWS_S3_CUSTOM_DOMAIN = 'your-cloudfront-domain.com' # If you’re using S3 as a CDN like CloudFront
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,11 +31,11 @@ DEFAULT_S3_PATH = "photos"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))
-# Quick-start development settings - unsuitable for production
+
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(ibqe%ry_^5m4@4a8((h9(lejw=9-(6v!11yzjk4jb#h0e_9yz'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
